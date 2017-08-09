@@ -1,0 +1,148 @@
+<html>
+  <head>
+    <!-- 最新的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JuL1nGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="jquery-3.2.1.js"></script>
+    <style>
+      body {
+        margin-top: 60px;
+      }
+      tt {
+        font-family: Georgia, serif;
+        color:black;
+        font-size: 35px;
+        font-weight: bold;
+      }
+      L1 {
+        font-size:20px;
+      }
+      input {
+        margin-bottom: 20px;
+        font-size: 20px;
+      }
+    </style>
+
+    <script type="text/javascript">
+
+      $(document).ready(function(){
+
+        idList = ['1'];
+        //adding levels
+        $("body").on("click", ".al", function(){
+          //where am I?
+          lparentID = $(this).parent().prop("tagName");
+          parentID = lparentID.substr(1, lparentID["length"]);
+          // console.log("parentID:"+parentID);
+          //does the parent have children already?
+          childrenNum = $(lparentID).next().children("li")["length"];
+          me = childrenNum+1;
+          theID = parentID + me;
+          //then add the content with the ID swaped
+          idList.push(theID);
+          //idList.push(['al',theID]);
+          $(this).parent().next().append('<li><Lrethis style="font-size:20px"><input placeholder="Subject" id="rethis-1">: <input placeholder="Math" id="rethis-2"> <button class="btn al">Add Level</button> or <button class="btn ad">Add Definition</button></Lrethis><ol></ol></li>'.replace("rethis", theID).replace("rethis", theID).replace("rethis", theID).replace("rethis", theID));
+        });
+        //adding definitions
+        $("body").on("click", ".ad", function(){
+          //where am I?
+          lparentID = $(this).parent().prop("tagName");
+          parentID = lparentID.substr(1, lparentID["length"]);
+          //console.log("parentID:"+parentID);
+          //does the parent have children already?
+          //childrenNum = $(lparentID).next().children()["length"];
+          //me = childrenNum+1;
+          theID = parentID;
+          //then add the content with the ID swaped
+          //idList.push(['ad',theID]);
+          //idList.push(theID);
+          $(this).parent().next().prepend('<Lrethis-d style="font-size:20px"><div class="col-sm-10"><input placeholder="type the definition here" id="rethis-d" class="form-control"></div><button class="btn ae col-sm-2">Add Example</button></br></Lrethis>'.replace("rethis", theID).replace("rethis", theID));
+          $(this).removeClass("ad");
+        });
+        //adding examples
+        $("body").on("click", ".ae", function(){
+          //where am I?
+          lparentID = $(this).parent().prop("tagName");
+          parentID = lparentID.substr(1, lparentID["length"]);
+          //console.log("parentID:"+parentID);
+          //does the parent have children already?
+          //childrenNum = $(lparentID).next().children()["length"];
+          //me = childrenNum+1;
+          theID = parentID;
+          //then add the content with the ID swaped
+          //idList.push(['ae',theID]);
+          //idList.push(theID);
+          $(this).parent().after('<Lrethis-e style="font-size:20px"><div class="col-sm-10"><input class="form-control" placeholder="type the example here" id="rethis-e"></div></br></Lrethis>'.replace("rethis", theID).replace("rethis", theID));
+          $(this).removeClass("ae");
+        });
+        //transcription
+        $("body").on("click",".trans", function(){
+          idList.sort();
+          console.log(idList);
+          for (i=0;i<idList.length;i++) {
+            //the ordered ids idList[i]
+            theLevel = $("#rethis-1".replace("rethis",idList[i])).val();
+            theName = $("#rethis-2".replace("rethis",idList[i])).val();
+            theExample = $("#rethis-e".replace("rethis",idList[i])).val();
+            theDef = $("#rethis-d".replace("rethis",idList[i])).val();
+            //message forming
+            message = "<li><"+theLevel+" style='20px' id='"+theName+"'>"+theName+"<ol>example def</ol></"+theLevel+"></li>";
+            //alert(theExample != undefined);
+            //alert(theDef != undefined);
+            if (theExample != undefined) {
+              message = message.replace("example", "<Example style='20px'>Example: "+theExample+"</br></Example>");
+            } else {
+              message = message.replace("example","");
+            };
+            if (theDef != undefined) {
+              message = message.replace("def", "<Def style='20px'>Definition: "+theDef+"</br></Def>");
+            } else {
+              message = message.replace("def","");
+            };
+            console.log(message);
+            //parent needs to be found
+            if (idList[i].length == 1) {
+              theParent = $("div#trans");
+            } else {
+              parentLevel = $("#rethis-1".replace("rethis",idList[i].substr(0, idList[i].length-1))).val();
+              parentID = $("#rethis-2".replace("rethis",idList[i].substr(0, idList[i].length-1))).val();
+              searchItem = parentLevel+"#"+parentID;
+              theParent =$(searchItem).children("ol");
+            }
+            //console.log(theParent);
+            theParent.append(message);//append this one's parent
+
+          };
+        });
+
+
+
+        });
+    </script>
+
+
+  </head>
+
+  <body>
+    <div class="container center-block">
+      <div class="jumbotron">
+        <tt class="animated bounce">Start your awesome recording!</br></tt> <!-- tt means tiL1e -->
+      </div>
+      <ol>
+        <li>
+          <L1 style="font-size:20px"><input placeholder="Subject" id="1-1">: <input placeholder="Math" id="1-2"> <button class="btn al">Add Level</button> or <button class="btn ad">Add Definition</button></L1> <!-- L1 means top level. al means add level. ad means add definitions-->
+          <ol>
+          </ol>
+        </li>
+      </ol>
+      <button type="button" class="btn btn-primary btn-lg btn-block trans">I am all finished! <span class="glyphicon glyphicon-download"></span></button>
+    <div id="trans">
+    </div>
+    <a onclick="this.href='data:text/html;charset=UTF-8,'+encodeURIComponent($('div#trans').html())" href="#" download="k.html">Download</a>
+
+    </div>
+  </body>
+</html>
